@@ -91,6 +91,7 @@ var Colors = {
 };
 
 var skinMat = new THREE.MeshLambertMaterial({color:Colors.skin, flatShading:true});
+var skin2Mat = new THREE.MeshLambertMaterial({color:Colors.skin, flatShading:true});
 var auburnMat = new THREE.MeshLambertMaterial({color:Colors.auburn, flatShading:true});
 var brownMat = new THREE.MeshLambertMaterial({color:Colors.brown, flatShading:true});
 var blackMat = new THREE.MeshLambertMaterial({color:Colors.black, flatShading:true});
@@ -342,7 +343,7 @@ var Zul = function() {
 
     var hairTuft4 = hairTuft1.clone();
     hairTuft4.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/8));
-    hairTuft4.applyMatrix( new THREE.Matrix4().makeTranslation(4, 0, 1));
+    hairTuft4.applyMatrix( new THREE.Matrix4().makeTranslation(4, -.5, 1));
     hairTuft4.updateMatrix();
     hairGeomMerged.merge(hairTuft4.geometry, hairTuft4.matrix);
 
@@ -534,6 +535,29 @@ var Zul = function() {
 
   this.freckles.add(freckledMerged);
 
+//Features - Nose and Ears
+////////////////////////////////////
+
+  var earGeom = new THREE.BoxBufferGeometry(1.5,3,1.5);
+  var earRight = new THREE.Mesh(earGeom, skin2Mat);
+  earRight.position.set(-8.5,1,0);
+  earRight.castShadow = true;
+  earRight.receiveShadow = false;
+
+  var earLeft = new THREE.Mesh(earGeom, skin2Mat);
+  earLeft.position.set(8.5,1,0);
+  earLeft.castShadow = true;
+  earLeft.receiveShadow = false;
+
+  var noseGeom = new THREE.CylinderGeometry( 1,2, 4, 4 );
+  var nose = new THREE.Mesh(noseGeom, skin2Mat);
+  nose.scale.set(.75, 1, 1.3);
+  nose.position.set(0,1,8);
+  nose.castShadow = true;
+  nose.receiveShadow = false;
+
+
+  this.head.add(earRight, earLeft, nose);
 }
 
 Zul.prototype.Nod = function(){
