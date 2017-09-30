@@ -583,6 +583,7 @@ Zul.prototype.moustacheMove = function(){
 
   var distance =.5;
   this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
+  this.moustache.rotation.z = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
 }
 
 function blinkLoop(){
@@ -599,7 +600,6 @@ function blinkLoop(){
         });
     }
 }
-
 
 var zul;
 
