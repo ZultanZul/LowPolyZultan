@@ -229,6 +229,9 @@ var Zul = function() {
   this.glasses.position.set(0,0,9);
   this.head.add(this.glasses);
 
+
+  var frameGeomMerged = new THREE.Geometry();
+
   var frameOuterGeom = new THREE.BoxGeometry(6,5,1);
   var frameInnerGeom = new THREE.BoxGeometry(4,3,1);
   frameOuterGeom.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/45));
@@ -237,39 +240,49 @@ var Zul = function() {
   var frameCutBSP = new ThreeBSP(frameInnerGeom);
   var frameintersectionBSP = frameBSP.subtract(frameCutBSP);  
   var frameLeft = frameintersectionBSP.toMesh(blackMat);
-  frameLeft.position.set(4,3,0);
-  frameLeft.castShadow = true;
-  frameLeft.receiveShadow = true;
+  frameLeft.applyMatrix( new THREE.Matrix4().makeTranslation(4, 3, 0));
+  frameLeft.updateMatrix();
+  frameGeomMerged.merge(frameLeft.geometry, frameLeft.matrix);  
 
   var frameRight = frameLeft.clone();
   frameRight.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI/30));
-  frameRight.position.set(-4,3,0);
+  frameRight.applyMatrix( new THREE.Matrix4().makeTranslation(-7.5, -0.25, 0));
+  frameRight.updateMatrix();
+  frameGeomMerged.merge(frameRight.geometry, frameRight.matrix);  
 
   var frameMidGeom = new THREE.BoxGeometry(3,1,1);
   var frameMid = new THREE.Mesh(frameMidGeom, blackMat);
-  frameMid.position.set(0, 3, 0);
-  frameMid.castShadow = true;
-  frameMid.receiveShadow = true;
+  frameMid.applyMatrix( new THREE.Matrix4().makeTranslation(0, 3, 0));
+  frameMid.updateMatrix();
+  frameGeomMerged.merge(frameMid.geometry, frameMid.matrix);  
 
   var frameEndGeom = new THREE.BoxGeometry(1.5,1,1);
   var frameEndRight = new THREE.Mesh(frameEndGeom, blackMat);
-  frameEndRight.position.set(7.5, 3, 0);
-  frameEndRight.castShadow = true;
-  frameEndRight.receiveShadow = true;
+  frameEndRight.applyMatrix( new THREE.Matrix4().makeTranslation(7.5, 3, 0));
+  frameEndRight.updateMatrix();
+  frameGeomMerged.merge(frameEndRight.geometry, frameEndRight.matrix);  
 
   var frameEndLeft = frameEndRight.clone();
   frameEndLeft.position.x = -frameEndRight.position.x;
+  frameEndLeft.updateMatrix();
+  frameGeomMerged.merge(frameEndLeft.geometry, frameEndLeft.matrix);  
 
   var frameSpokeGeom = new THREE.BoxGeometry(1,1,12);
   var frameSpokeRight = new THREE.Mesh(frameSpokeGeom, blackMat);
-  frameSpokeRight.position.set(8, 3, -5.5);
-  frameSpokeRight.castShadow = true;
-  frameSpokeRight.receiveShadow = true;
+  frameSpokeRight.applyMatrix( new THREE.Matrix4().makeTranslation(8, 3, -5.5));
+  frameSpokeRight.updateMatrix();
+  frameGeomMerged.merge(frameSpokeRight.geometry, frameSpokeRight.matrix);  
 
   var frameSpokeLeft = frameSpokeRight.clone();
   frameSpokeLeft.position.x = -frameSpokeRight.position.x;
+  frameSpokeLeft.updateMatrix();
+  frameGeomMerged.merge(frameSpokeLeft.geometry, frameSpokeLeft.matrix); 
 
-  this.glasses.add(frameLeft, frameRight, frameMid, frameEndRight,frameEndLeft,frameSpokeRight,frameSpokeLeft);
+  var frameMerged = new THREE.Mesh(frameGeomMerged, blackMat);
+  frameMerged.castShadow = true;
+  frameMerged.receiveShadow = true;
+
+  this.glasses.add(frameMerged);
 
 //HAIR
 ////////////////////////////////////
@@ -424,27 +437,44 @@ var Zul = function() {
   this.freckles.position.set(0,0,8);
   this.head.add(this.freckles);
 
+
+    var frecklesGeomMerged = new THREE.Geometry();
+    
     var frecklesGeom = new THREE.PlaneGeometry( 0.5, 0.5 );
 
     var freckle1 = new THREE.Mesh(frecklesGeom, brownMat);
-    freckle1.position.set(-5,0,.01);
-    freckle1.castShadow = false;
-    freckle1.receiveShadow = false;
+    freckle1.applyMatrix( new THREE.Matrix4().makeTranslation(-5, 0, 0.01));
+    freckle1.updateMatrix();
+    frecklesGeomMerged.merge(freckle1.geometry, freckle1.matrix);  
 
     var freckle2 = freckle1.clone();
-    freckle2.position.set(-5.5,-1,.01);
+    freckle2.applyMatrix( new THREE.Matrix4().makeTranslation(-0.5,-1,0));
+    freckle2.updateMatrix();
+    frecklesGeomMerged.merge(freckle2.geometry, freckle2.matrix);  
 
     var freckle3 = freckle1.clone();
-    freckle3.position.set(-4,-0.5,.01);
+    freckle3.applyMatrix( new THREE.Matrix4().makeTranslation(1,-0.5,0));
+    freckle3.updateMatrix();
+    frecklesGeomMerged.merge(freckle3.geometry, freckle3.matrix);  
 
     var freckle4 = freckle1.clone();
     freckle4.position.x = -freckle1.position.x;
+    freckle4.updateMatrix();
+    frecklesGeomMerged.merge(freckle4.geometry, freckle4.matrix);  
     var freckle5 = freckle2.clone();
     freckle5.position.x = -freckle2.position.x;
+    freckle5.updateMatrix();
+    frecklesGeomMerged.merge(freckle5.geometry, freckle5.matrix);  
     var freckle6 = freckle3.clone();
     freckle6.position.x = -freckle3.position.x;
+    freckle6.updateMatrix();
+    frecklesGeomMerged.merge(freckle6.geometry, freckle6.matrix); 
 
-  this.freckles.add(freckle1,freckle2,freckle3, freckle4,freckle5,freckle6);
+  var freckledMerged = new THREE.Mesh(frecklesGeomMerged, brownMat);
+  freckledMerged.castShadow = false;
+  freckledMerged.receiveShadow = false;
+
+  this.freckles.add(freckledMerged);
 
 }
 
@@ -493,7 +523,7 @@ var zul;
 
 function createZul() {
   zul = new Zul();
-  zul.mesh.position.y=-18;
+  zul.mesh.position.y=-12;
   scene.add(zul.mesh);
 }
 
