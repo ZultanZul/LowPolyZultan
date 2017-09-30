@@ -291,31 +291,33 @@ var Zul = function() {
   this.hair.position.set(0,9,0);
   this.head.add(this.hair);
 
-  var hairFlatGeom = new THREE.BoxBufferGeometry(10,2,18);
+  var hairGeomMerged = new THREE.Geometry();
+
+  var hairFlatGeom = new THREE.BoxGeometry(10,2,18);
 
     var hair1 = new THREE.Mesh(hairFlatGeom, auburnMat);
     hair1.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/40));
-    hair1.position.set(-4, -0.5, 0);
-    hair1.castShadow = true;
-    hair1.receiveShadow = true;
+    hair1.applyMatrix( new THREE.Matrix4().makeTranslation(-4, -0.5, 0));
+    hair1.updateMatrix();
+    hairGeomMerged.merge(hair1.geometry, hair1.matrix);  
 
     var hair2 = new THREE.Mesh(hairFlatGeom, auburnMat);
     hair2.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/10));
-    hair2.position.set(-2, 1, 0);
-    hair2.castShadow = true;
-    hair2.receiveShadow = true;
+    hair2.applyMatrix( new THREE.Matrix4().makeTranslation(-2, 1, 0));
+    hair2.updateMatrix();
+    hairGeomMerged.merge(hair2.geometry, hair2.matrix);  
 
     var hair3 = new THREE.Mesh(hairFlatGeom, auburnMat);
     hair3.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/5));
-    hair3.position.set(2, 1, 0);
-    hair3.castShadow = true;
-    hair3.receiveShadow = true;
+    hair3.applyMatrix( new THREE.Matrix4().makeTranslation(2, 1, 0));
+    hair3.updateMatrix();
+    hairGeomMerged.merge(hair3.geometry, hair3.matrix);  
 
     var hair4 = new THREE.Mesh(hairFlatGeom, auburnMat);
     hair4.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/4));
-    hair4.position.set(6, 0, 0);
-    hair4.castShadow = true;
-    hair4.receiveShadow = true;
+    hair4.applyMatrix( new THREE.Matrix4().makeTranslation(6, 0, 0));
+    hair4.updateMatrix();
+    hairGeomMerged.merge(hair4.geometry, hair4.matrix);  
 
   var hairFlatBackGeom = new THREE.BoxGeometry(18,7,6);
       hairFlatBackGeom.vertices[0].x-=1;
@@ -324,35 +326,91 @@ var Zul = function() {
       hairFlatBackGeom.vertices[5].x+=1;
 
     var hair5 = new THREE.Mesh(hairFlatBackGeom, auburnMat);
-    //hair5.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI));
-    hair5.position.set(0, -4.5, -6);
-    hair5.castShadow = true;
-    hair5.receiveShadow = true;
+    hair5.applyMatrix( new THREE.Matrix4().makeTranslation(0, -4.5, -6));
+    hair5.updateMatrix();
+    hairGeomMerged.merge(hair5.geometry, hair5.matrix);
+
 
   var hairTuftGeom = new THREE.CylinderGeometry( 1,1.5, 10, 4 );
 
     var hairTuft1 = new THREE.Mesh(hairTuftGeom, auburnMat);
     hairTuft1.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/10));
     hairTuft1.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/10));
-    hairTuft1.position.set(-4, 2, -4);
-    hairTuft1.castShadow = true;
-    hairTuft1.receiveShadow = true;
+    hairTuft1.applyMatrix( new THREE.Matrix4().makeTranslation(-4, 2, -4));
+    hairTuft1.updateMatrix();
+    hairGeomMerged.merge(hairTuft1.geometry, hairTuft1.matrix);
+
+    var hairTuft4 = hairTuft1.clone();
+    hairTuft4.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/8));
+    hairTuft4.applyMatrix( new THREE.Matrix4().makeTranslation(4, 0, 1));
+    hairTuft4.updateMatrix();
+    hairGeomMerged.merge(hairTuft4.geometry, hairTuft4.matrix);
+
+
+    var hairTuft7 = hairTuft1.clone();
+    hairTuft7.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/8));
+    hairTuft7.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI/8));
+    hairTuft7.applyMatrix( new THREE.Matrix4().makeTranslation(0.5, -1, 2));
+    hairTuft7.updateMatrix();
+    hairGeomMerged.merge(hairTuft7.geometry, hairTuft7.matrix);
+
 
     var hairTuft2 = new THREE.Mesh(hairTuftGeom, auburnMat);
     hairTuft2.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI/6));
     hairTuft2.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/10));
-    hairTuft2.position.set(-6.5, -1, -1);
-    hairTuft2.castShadow = true;
-    hairTuft2.receiveShadow = true;
+    hairTuft2.applyMatrix( new THREE.Matrix4().makeTranslation(-6.5, -1, -1));
+    hairTuft2.updateMatrix();
+    hairGeomMerged.merge(hairTuft2.geometry, hairTuft2.matrix);
+
+
+    var hairTuft5 = hairTuft2.clone();
+    hairTuft5.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/10));
+    hairTuft5.applyMatrix( new THREE.Matrix4().makeTranslation(2, 1.5, -5));
+    hairTuft5.updateMatrix();
+    hairGeomMerged.merge(hairTuft5.geometry, hairTuft5.matrix);
 
     var hairTuft3 = new THREE.Mesh(hairTuftGeom, auburnMat);
     hairTuft3.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/3));
     hairTuft3.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/3));
-    hairTuft3.position.set(1, 3, -3);
-    hairTuft3.castShadow = true;
-    hairTuft3.receiveShadow = true;
+    hairTuft3.applyMatrix( new THREE.Matrix4().makeTranslation(3, 3, -3));
+    hairTuft3.updateMatrix();
+    hairGeomMerged.merge(hairTuft3.geometry, hairTuft3.matrix);
 
-  this.hair.add(hair1,hair2,hair3,hair4,hair5,hairTuft1,hairTuft2,hairTuft3);
+
+    var hairTuft6 = hairTuft3.clone();
+    hairTuft6.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/10));
+    hairTuft6.applyMatrix(new THREE.Matrix4().makeRotationY(-Math.PI/5));
+    hairTuft6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -1.5, -1));
+    hairTuft6.updateMatrix();
+    hairGeomMerged.merge(hairTuft6.geometry, hairTuft6.matrix);
+
+
+    var hairTuft8 = hairTuft6.clone();
+    hairTuft8.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/30));
+    hairTuft8.applyMatrix( new THREE.Matrix4().makeTranslation(-1.5, 1.5, 3.5));
+    hairTuft8.updateMatrix();
+    hairGeomMerged.merge(hairTuft8.geometry, hairTuft8.matrix);
+
+
+    var hairTuft9 = hairTuft2.clone();
+    hairTuft9.applyMatrix(new THREE.Matrix4().makeRotationY(Math.PI/2));
+    hairTuft9.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/7));
+    hairTuft9.applyMatrix( new THREE.Matrix4().makeTranslation(3.5, 5.5, -5));
+    hairTuft9.updateMatrix();
+    hairGeomMerged.merge(hairTuft9.geometry, hairTuft9.matrix);
+
+    var hairTuft10 = hairTuft9.clone();
+    hairTuft10.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/4));
+    hairTuft10.applyMatrix( new THREE.Matrix4().makeTranslation(-.5, -1, -6));
+    hairTuft10.updateMatrix();
+    hairGeomMerged.merge(hairTuft10.geometry, hairTuft10.matrix);
+
+
+    var hairMerged = new THREE.Mesh(hairGeomMerged, auburnMat);
+    hairMerged.castShadow = true;
+    hairMerged.receiveShadow = true;
+
+  this.hair.add(hairMerged);
 
 //EYES
 ////////////////////////////////////
@@ -523,7 +581,7 @@ var zul;
 
 function createZul() {
   zul = new Zul();
-  zul.mesh.position.y=-12;
+  zul.mesh.position.y=-15;
   scene.add(zul.mesh);
 }
 
