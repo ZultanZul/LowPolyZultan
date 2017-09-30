@@ -24,7 +24,7 @@ function createScene() {
     farPlane
     );
   camera.position.x = 0;
-  camera.position.z = 100;
+  camera.position.z = 80;
   camera.position.y = 0;
 
   renderer = new THREE.WebGLRenderer({ 
@@ -84,7 +84,7 @@ function createLights() {
 var Colors = {
   skin:0xffe0bd,
   auburn:0x905537,
-  brown:0xa4774f,
+  brown:0x6e5136,
   black: 0x2e2e2e,
   white: 0xffffff,
   lightBlue: 0x6295a8,
@@ -312,6 +312,8 @@ var Zul = function() {
 
   this.hair.add(hair1,hair2,hair3,hair4,hair5,hairTuft1,hairTuft2,hairTuft3);
 
+//EYES
+////////////////////////////////////
 
   this.eyes = new THREE.Group();
   this.eyes.position.set(0,3,9);
@@ -363,6 +365,8 @@ var Zul = function() {
 
   this.eyes.add(eyeWhiteRight, eyeWhiteLeft);
 
+//EYE BROWS
+////////////////////////////////////
 
   this.eyeBrows = new THREE.Group();
   this.eyeBrows.position.set(0,6,8);
@@ -384,6 +388,35 @@ var Zul = function() {
     this.eyeBrowLeft.receiveShadow = false;
 
   this.eyeBrows.add(this.eyeBrowRight, this.eyeBrowLeft);
+
+//Freckles
+////////////////////////////////////
+  this.freckles = new THREE.Group();
+  this.freckles.position.set(0,0,8);
+  this.head.add(this.freckles);
+
+    var frecklesGeom = new THREE.PlaneGeometry( 0.5, 0.5 );
+
+    var freckle1 = new THREE.Mesh(frecklesGeom, brownMat);
+    freckle1.position.set(-5,0,.01);
+    freckle1.castShadow = false;
+    freckle1.receiveShadow = false;
+
+    var freckle2 = freckle1.clone();
+    freckle2.position.set(-5.5,-1,.01);
+
+    var freckle3 = freckle1.clone();
+    freckle3.position.set(-4,-0.5,.01);
+
+    var freckle4 = freckle1.clone();
+    freckle4.position.x = -freckle1.position.x;
+    var freckle5 = freckle2.clone();
+    freckle5.position.x = -freckle2.position.x;
+    var freckle6 = freckle3.clone();
+    freckle6.position.x = -freckle3.position.x;
+
+  this.freckles.add(freckle1,freckle2,freckle3, freckle4,freckle5,freckle6);
+
 }
 
 Zul.prototype.Nod = function(){
@@ -410,9 +443,9 @@ Zul.prototype.moustacheMove = function(){
 }
 
 function blinkLoop(){
-    var isBlinking = false;
+    var isBlinking;
 
-    if (Math.random()>.99) blink();
+    if ((Math.random()>.99) || (isBlinking = false)) blink();
 
   function blink() {
       if (isBlinking) return;
@@ -430,7 +463,7 @@ var zul;
 
 function createZul() {
   zul = new Zul();
-  zul.mesh.position.y=-15;
+  zul.mesh.position.y=-18;
   scene.add(zul.mesh);
 }
 
