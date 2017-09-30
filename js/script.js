@@ -12,7 +12,7 @@ function createScene() {
   HEIGHT = container.offsetHeight;
   WIDTH = container.offsetWidth;
   scene = new THREE.Scene();
-  //scene.fog = new THREE.Fog(0xffffff, 150,300);
+  scene.fog = new THREE.Fog(0xffffff, 150,300);
   aspectRatio = WIDTH / HEIGHT;
   fieldOfView = 50;
   nearPlane = 1;
@@ -53,6 +53,8 @@ function handleWindowResize() {
   camera.updateProjectionMatrix();
 }
 
+var isMobile = /iPhone|Android/i.test(navigator.userAgent);
+
 var globalLight, shadowLight,backLight;
 
 function createLights() {
@@ -69,9 +71,9 @@ function createLights() {
   shadowLight.shadow.camera.bottom = -150;
   shadowLight.shadow.camera.near = 1;
   shadowLight.shadow.camera.far = 1000;
-  shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 2048;
+  shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 1024;
   scene.add(globalLight);
-  scene.add(backLight);
+  //scene.add(backLight);
   scene.add(shadowLight);
 }
 
@@ -397,32 +399,28 @@ Zul.prototype.eyeMove = function(){
   this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
 }
 
+Zul.prototype.moustacheMove = function(){
+
+  var distance =.5;
+  this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
+}
 
 function blinkLoop(){
+    var isBlinking = false;
+
     if (Math.random()>.99) blink();
 
-  
   function blink() {
-      var isBlinking;
       if (isBlinking) return;
-      isBlinking = true;
       zul.eyes.scale.y = 1;
       TweenMax.to(zul.eyes.scale, .07, {
           y: 0, yoyo: true, repeat: 1, onComplete: () => {
              isBlinking = false;
           }
       });
-
   }
 }
 
-
-
-Zul.prototype.moustacheMove = function(){
-
-  var distance =.5;
-  this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
-}
 
 var zul;
 
