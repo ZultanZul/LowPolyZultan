@@ -1,0 +1,40 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: linear-gradient(135deg, #0391ff 0%,#016bbc 47%,#016bbc 55%,#0391ff 100%);
+}
+#container::before {
+	content:'';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	overflow: hidden;
+	background-image: url(images/ray.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center center;
+	display:block;
+    animation: spin 7s infinite linear;
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;	
+}
+
+
