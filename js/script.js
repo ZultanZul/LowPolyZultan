@@ -453,6 +453,8 @@ Zul.prototype.Nod = function(){
   this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
+
+  this.body.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
 }
 
 Zul.prototype.eyeMove = function(){
