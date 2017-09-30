@@ -53,12 +53,15 @@ function handleWindowResize() {
   camera.updateProjectionMatrix();
 }
 
-var globalLight, shadowLight;
+var globalLight, shadowLight,backLight;
 
 function createLights() {
-  globalLight = new THREE.HemisphereLight(0xaaaaaa,0x000000,  .9);
-  shadowLight = new THREE.DirectionalLight(0xffffff,  .9);
-  shadowLight.position.set(50, 50, 50);
+  globalLight = new THREE.HemisphereLight(0xffffff, 0x555555, 1);
+  shadowLight = new THREE.DirectionalLight(0xffffff,  .4);
+  backLight = new THREE.DirectionalLight(0xffffff, .4);
+  backLight.position.set(100, 100, -200);
+
+  shadowLight.position.set(100, 250, 75);
   shadowLight.castShadow = true;
   shadowLight.shadow.camera.left = -150;
   shadowLight.shadow.camera.right = 150;
@@ -68,6 +71,7 @@ function createLights() {
   shadowLight.shadow.camera.far = 1000;
   shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 2048;
   scene.add(globalLight);
+  scene.add(backLight);
   scene.add(shadowLight);
 }
 
@@ -76,12 +80,16 @@ var Colors = {
   auburn:0x905537,
   brown:0xa4774f,
   black: 0x2e2e2e,
+  white: 0xffffff,
+  lightBlue: 0x6295a8,
 };
 
 var skinMat = new THREE.MeshLambertMaterial({color:Colors.skin, flatShading:true});
 var auburnMat = new THREE.MeshLambertMaterial({color:Colors.auburn, flatShading:true});
 var brownMat = new THREE.MeshLambertMaterial({color:Colors.brown, flatShading:true});
 var blackMat = new THREE.MeshLambertMaterial({color:Colors.black, flatShading:true});
+var whiteMat = new THREE.MeshPhongMaterial({color:Colors.white, flatShading:true});
+var blueMat = new THREE.MeshPhongMaterial({color:Colors.lightBlue, flatShading:true});
 var normalMat = new THREE.MeshNormalMaterial({});
 
 var Zul = function() {
@@ -145,13 +153,15 @@ var Zul = function() {
     beard7.position.x = -beard5.position.x;
     beard8.position.x = -beard6.position.x;
 
-  var beard4Geom = new THREE.BoxGeometry(1,15,16);
+  var beard4Geom = new THREE.BoxGeometry(1,15.5,16);
   beard4Geom.vertices[2].z-=1;
   beard4Geom.vertices[7].z-=1;
   var beard9 = new THREE.Mesh(beard4Geom, auburnMat);
-  beard9.position.set(0, -5.25, 2.75);
+  beard9.position.set(0, -5.75, 2.75);
   beard9.castShadow = true;
   beard9.receiveShadow = true;
+
+  var mouthGeom = new THREE.BoxGeometry(1,15.5,16);
 
   this.beard.add(beard1, beard2, beard3, beard4, beard5, beard6, beard7, beard8, beard9); 
 
@@ -167,10 +177,13 @@ var Zul = function() {
     moustacheGeom.vertices[7].y-=2;
     moustacheGeom.vertices[8].x-=1;
     moustacheGeom.vertices[9].x+=1;
+
+    moustacheGeom.applyMatrix( new THREE.Matrix4().makeTranslation(0, 4, 0));
   this.moustache = new THREE.Mesh(moustacheGeom, auburnMat);
   this.moustache.castShadow = true;
   this.moustache.receiveShadow = true;
-  this.moustache.position.set(0,4,9);
+
+  this.moustache.position.set(0,0,9);
   this.beard.add(this.moustache);
 
 
@@ -256,6 +269,18 @@ var Zul = function() {
     hair4.castShadow = true;
     hair4.receiveShadow = true;
 
+  var hairFlatBackGeom = new THREE.BoxGeometry(18,7,6);
+      hairFlatBackGeom.vertices[0].x-=1;
+      hairFlatBackGeom.vertices[1].x-=1;
+      hairFlatBackGeom.vertices[4].x+=1;
+      hairFlatBackGeom.vertices[5].x+=1;
+
+    var hair5 = new THREE.Mesh(hairFlatBackGeom, auburnMat);
+    //hair5.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI));
+    hair5.position.set(0, -4.5, -6);
+    hair5.castShadow = true;
+    hair5.receiveShadow = true;
+
   var hairTuftGeom = new THREE.CylinderGeometry( 1,1.5, 10, 4 );
 
     var hairTuft1 = new THREE.Mesh(hairTuftGeom, auburnMat);
@@ -279,14 +304,80 @@ var Zul = function() {
     hairTuft3.castShadow = true;
     hairTuft3.receiveShadow = true;
 
-  this.hair.add(hair1,hair2,hair3,hair4,hairTuft1,hairTuft2,hairTuft3);
+  this.hair.add(hair1,hair2,hair3,hair4,hair5,hairTuft1,hairTuft2,hairTuft3);
 
 
-  // this.hair = new THREE.Group();
-  // this.hair.position.set(0,9,0);
-  // this.head.add(this.hair);
+  this.eyes = new THREE.Group();
+  this.eyes.position.set(0,3,9);
+  this.head.add(this.eyes);
+
+  var eyeWhiteGeom = new THREE.PlaneGeometry( 2.5, 2.5 );
+
+    var eyeWhiteRight = new THREE.Mesh(eyeWhiteGeom, whiteMat);
+    eyeWhiteRight.position.set(-3.75,0,0);
+    eyeWhiteRight.castShadow = false;
+    eyeWhiteRight.receiveShadow = false;
+
+    var eyeBlueGeom = new THREE.PlaneGeometry( 1.5, 1.5 );
+
+    this.eyeBlueRight = new THREE.Mesh(eyeBlueGeom, blueMat);
+    this.eyeBlueRight.position.set(0,0,.01);
+    this.eyeBlueRight.castShadow = false;
+    this.eyeBlueRight.receiveShadow = false;
+
+  eyeWhiteRight.add(this.eyeBlueRight);
+
+    var eyePupilGeom = new THREE.PlaneGeometry( 1, 1 );
+
+    this.eyePupilRight = new THREE.Mesh(eyePupilGeom, blackMat);
+    this.eyePupilRight.position.set(0,0,.02);
+    this.eyePupilRight.castShadow = false;
+    this.eyePupilRight.receiveShadow = false;
+
+  this.eyeBlueRight.add(this.eyePupilRight); 
+
+    var eyeWhiteLeft = new THREE.Mesh(eyeWhiteGeom, whiteMat);
+    eyeWhiteLeft.position.set(3.75,0,0);
+    eyeWhiteLeft.castShadow = false;
+    eyeWhiteLeft.receiveShadow = false;
+
+    this.eyeBlueLeft = new THREE.Mesh(eyeBlueGeom, blueMat);
+    this.eyeBlueLeft.position.set(0,0,.01);
+    this.eyeBlueLeft.castShadow = false;
+    this.eyeBlueLeft.receiveShadow = false;
+
+  eyeWhiteLeft.add(this.eyeBlueLeft);
+
+    this.eyePupilLeft = new THREE.Mesh(eyePupilGeom, blackMat);
+    this.eyePupilLeft.position.set(0,0,.02);
+    this.eyePupilLeft.castShadow = false;
+    this.eyePupilLeft.receiveShadow = false;
+
+  this.eyeBlueLeft.add(this.eyePupilLeft); 
+
+  this.eyes.add(eyeWhiteRight, eyeWhiteLeft);
 
 
+  this.eyeBrows = new THREE.Group();
+  this.eyeBrows.position.set(0,6,8);
+  this.head.add(this.eyeBrows);
+
+  var eyeBrowGeom = new THREE.BoxGeometry(4,1,1);
+
+    this.eyeBrowRight = new THREE.Mesh(eyeBrowGeom, auburnMat);
+    this.eyeBrowRight.applyMatrix(new THREE.Matrix4().makeRotationZ(Math.PI/45));
+    this.eyeBrowRight.position.set(-3.75,0,0);
+    this.eyeBrowRight.castShadow = false;
+    this.eyeBrowRight.receiveShadow = false;
+
+
+    this.eyeBrowLeft = new THREE.Mesh(eyeBrowGeom, auburnMat);
+    this.eyeBrowLeft.applyMatrix(new THREE.Matrix4().makeRotationZ(-Math.PI/45));
+    this.eyeBrowLeft.position.set(3.75,0,0);
+    this.eyeBrowLeft.castShadow = false;
+    this.eyeBrowLeft.receiveShadow = false;
+
+  this.eyeBrows.add(this.eyeBrowRight, this.eyeBrowLeft);
 }
 
 Zul.prototype.Nod = function(){
@@ -296,18 +387,56 @@ Zul.prototype.Nod = function(){
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
 }
 
+Zul.prototype.eyeMove = function(){
+
+  var distance = 1;
+  this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBlueLeft.position.x = Math.sin(Date.now() * 0.005) * distance ;
+
+  this.eyeBrowRight.position.y = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
+}
+
+
+function blinkLoop(){
+    if (Math.random()>.99) blink();
+
+  
+  function blink() {
+      var isBlinking;
+      if (isBlinking) return;
+      isBlinking = true;
+      zul.eyes.scale.y = 1;
+      TweenMax.to(zul.eyes.scale, .07, {
+          y: 0, yoyo: true, repeat: 1, onComplete: () => {
+             isBlinking = false;
+          }
+      });
+
+  }
+}
+
+
+
+Zul.prototype.moustacheMove = function(){
+
+  var distance =.5;
+  this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
+}
 
 var zul;
 
 function createZul() {
   zul = new Zul();
-  zul.mesh.position.y=-25;
+  zul.mesh.position.y=-15;
   scene.add(zul.mesh);
 }
 
 function loop(){
-
   zul.Nod();
+  zul.eyeMove();
+  zul.moustacheMove();
+  blinkLoop();
   render();  
   requestAnimationFrame(loop);
 }
