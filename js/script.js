@@ -28,6 +28,7 @@ function createScene() {
   camera.position.y = 0;
 
   renderer = new THREE.WebGLRenderer({ 
+
     alpha: true, 
     antialias: true 
   });
@@ -71,7 +72,10 @@ function createLights() {
   shadowLight.shadow.camera.bottom = -150;
   shadowLight.shadow.camera.near = 1;
   shadowLight.shadow.camera.far = 1000;
-  shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 1024;
+  
+  if (isMobile) shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 1024;
+  if (!isMobile) shadowLight.shadow.mapSize.width = shadowLight.shadow.mapSize.height = 2048;
+
   scene.add(globalLight);
   //scene.add(backLight);
   scene.add(shadowLight);
