@@ -119,57 +119,86 @@ var Zul = function() {
 //BEARD
 ////////////////////////////////////
 
-  var beard1Geom = new THREE.BoxBufferGeometry(2,12,16);
+  var beardGeomMerged = new THREE.Geometry();
+
+  var beard1Geom = new THREE.BoxGeometry(2,12,16);
 
     var beard1 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard1.position.set(9, 0, 0);
-    beard1.castShadow = true;
-    beard1.receiveShadow = true;
+    beard1.applyMatrix( new THREE.Matrix4().makeTranslation(9, 0, 0));
+    beard1.updateMatrix();
+    beardGeomMerged.merge(beard1.geometry, beard1.matrix);
 
     var beard2 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard2.position.set(7, -3, 1);
-    beard2.castShadow = true;
-    beard2.receiveShadow = true;
+    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3, 1));
+    beard2.updateMatrix();
+    beardGeomMerged.merge(beard2.geometry, beard2.matrix);
 
     var beard3 = beard1.clone();
-    var beard4 = beard2.clone(); 
     beard3.position.x = -beard1.position.x;
+    beard3.updateMatrix();
+    beardGeomMerged.merge(beard3.geometry, beard3.matrix);  
+
+    var beard4 = beard2.clone(); 
     beard4.position.x = -beard2.position.x;
+    beard4.updateMatrix();
+    beardGeomMerged.merge(beard4.geometry, beard4.matrix);
+
 
   var beard2Geom = new THREE.BoxGeometry(3,14,16);
-    //beard2Geom.vertices[0].z-=1;
     beard2Geom.vertices[2].z-=2;
     beard2Geom.vertices[7].z-=2;
 
     var beard5 = new THREE.Mesh(beard2Geom, auburnMat);
-    beard5.position.set(5, -5, 2);
-    beard5.castShadow = true;
-    beard5.receiveShadow = true;
+    beard5.applyMatrix( new THREE.Matrix4().makeTranslation(5, -5, 2));
+    beard5.updateMatrix();
+    beardGeomMerged.merge(beard5.geometry, beard5.matrix);
 
-  var beard3Geom = new THREE.BoxGeometry(3,15,16);
+  var beard3Geom = new THREE.BoxGeometry(3,14,16);
     beard3Geom.vertices[2].z-=2;
     beard3Geom.vertices[7].z-=2;
 
     var beard6 = new THREE.Mesh(beard3Geom, auburnMat);
-    beard6.position.set(2, -5.5, 2.5);
-    beard6.castShadow = true;
-    beard6.receiveShadow = true;
+    beard6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -6, 2.5));
+    beard6.updateMatrix();
+    beardGeomMerged.merge(beard6.geometry, beard6.matrix);
+
     var beard7 = beard5.clone();
-    var beard8 = beard6.clone(); 
     beard7.position.x = -beard5.position.x;
+    beard7.updateMatrix();
+    beardGeomMerged.merge(beard7.geometry, beard7.matrix);  
+    var beard8 = beard6.clone(); 
     beard8.position.x = -beard6.position.x;
+    beard8.updateMatrix();
+    beardGeomMerged.merge(beard8.geometry, beard8.matrix);  
 
-  var beard4Geom = new THREE.BoxGeometry(1,15.5,16);
-  beard4Geom.vertices[2].z-=1;
-  beard4Geom.vertices[7].z-=1;
-  var beard9 = new THREE.Mesh(beard4Geom, auburnMat);
-  beard9.position.set(0, -5.75, 2.75);
-  beard9.castShadow = true;
-  beard9.receiveShadow = true;
 
-  var mouthGeom = new THREE.BoxGeometry(1,15.5,16);
+  var beard4Geom = new THREE.BoxGeometry(1,14.5,16);
+    beard4Geom.vertices[2].z-=1;
+    beard4Geom.vertices[7].z-=1;
+    var beard9 = new THREE.Mesh(beard4Geom, auburnMat);
+    beard9.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6.25, 2.75));
+    beard9.updateMatrix();
+    beardGeomMerged.merge(beard9.geometry, beard9.matrix);  
 
-  this.beard.add(beard1, beard2, beard3, beard4, beard5, beard6, beard7, beard8, beard9); 
+  var beardMerged = new THREE.Mesh(beardGeomMerged, auburnMat);
+  beardMerged.castShadow = true;
+  beardMerged.receiveShadow = true;
+
+
+  var mouthGeom = new THREE.BoxGeometry(10,4,1);
+  var mouth = new THREE.Mesh(mouthGeom, blackMat); 
+  mouth.position.set(0,2,8);
+  mouth.castShadow = false;
+  mouth.receiveShadow = true;
+
+  var teethGeom = new THREE.BoxGeometry(10,1,1);
+  var teeth = new THREE.Mesh(teethGeom, whiteMat); 
+  teeth.position.set(0,1,0.1);
+  teeth.castShadow = false;
+  teeth.receiveShadow = true;
+  mouth.add(teeth)
+
+  this.beard.add(beardMerged, mouth); 
 
 
   var moustacheGeom = new THREE.BoxGeometry(14,3,3,3);
@@ -444,18 +473,17 @@ Zul.prototype.moustacheMove = function(){
 
 function blinkLoop(){
     var isBlinking;
-
     if ((Math.random()>.99) || (isBlinking = false)) blink();
 
-  function blink() {
-      if (isBlinking) return;
-      zul.eyes.scale.y = 1;
-      TweenMax.to(zul.eyes.scale, .07, {
-          y: 0, yoyo: true, repeat: 1, onComplete: () => {
-             isBlinking = false;
-          }
-      });
-  }
+    function blink() {
+        isBlinking = true;
+        zul.eyes.scale.y = 1;
+        TweenMax.to(zul.eyes.scale, .07, {
+            y: 0, yoyo: true, repeat: 1, onComplete: () => {
+               isBlinking = false;
+            }
+        });
+    }
 }
 
 
