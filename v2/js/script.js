@@ -148,8 +148,8 @@ var Head = function() {
     beardGeomMerged.merge(beard1.geometry, beard1.matrix);
 
     var beard2 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3, 2));
-    beard2.scale.z = 0.8;
+    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3,7));
+    beard2.scale.z = 0.2;
     beard2.updateMatrix();
     beardGeomMerged.merge(beard2.geometry, beard2.matrix);
 
@@ -606,23 +606,23 @@ var Torso = function() {
     map: textShirt
   });
 
-  var chestGeom = new THREE.BoxGeometry(14, 24, 10, 1, 2, 1);
+  var chestGeom = new THREE.BoxGeometry(14, 21, 10, 1, 2, 1);
     chestGeom.vertices[0].x+=2;
     chestGeom.vertices[0].z+=2;
-    chestGeom.vertices[1].x+=2;
-    chestGeom.vertices[1].z-=2;
+    chestGeom.vertices[1].x+=1;
+    chestGeom.vertices[1].z-=1;
     chestGeom.vertices[2].x+=1;
     chestGeom.vertices[3].x+=1;
 
-    chestGeom.vertices[6].x-=2;
-    chestGeom.vertices[6].z-=2;
+    chestGeom.vertices[6].x-=1;
+    chestGeom.vertices[6].z-=1;
     chestGeom.vertices[7].x-=2;
     chestGeom.vertices[7].z+=2;
     chestGeom.vertices[8].x-=1;
     chestGeom.vertices[9].x-=1;
 
   this.chest = new THREE.Mesh(chestGeom, shirtMat);
-  this.chest.position.set(0,-1,-1);
+  this.chest.position.set(0,0.5,-1);
   this.chest.castShadow = true;
   // this.chest.receiveShadow = true;
 
@@ -634,13 +634,13 @@ var Torso = function() {
   var buttonGeom = new THREE.CylinderGeometry(.75, .75, .75, 6 );
   buttonGeom.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/2));
   var button1 = new THREE.Mesh(buttonGeom, blackMat);
-  button1.applyMatrix( new THREE.Matrix4().makeTranslation(0, 3, 5.5));
+  button1.applyMatrix( new THREE.Matrix4().makeTranslation(0, 2, 5.25));
   button1.updateMatrix();
   buttonGeomMerged.merge(button1.geometry, button1.matrix);
 
   var button2 = new THREE.Mesh(buttonGeom, blackMat);
 
-  button2.applyMatrix( new THREE.Matrix4().makeTranslation(0, -1, 5));
+  button2.applyMatrix( new THREE.Matrix4().makeTranslation(0, -1.5, 5));
   button2.updateMatrix();
   buttonGeomMerged.merge(button2.geometry, button2.matrix);
 
@@ -650,7 +650,7 @@ var Torso = function() {
   buttonGeomMerged.merge(button3.geometry, button3.matrix);
 
   var button4 = new THREE.Mesh(buttonGeom, blackMat);
-  button4.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 5));
+  button4.applyMatrix( new THREE.Matrix4().makeTranslation(0, -8.5, 5));
   button4.updateMatrix();
   buttonGeomMerged.merge(button4.geometry, button4.matrix);
 
@@ -669,40 +669,57 @@ var Torso = function() {
   neck.position.set(0, 12, -2);
   this.mesh.add(neck);
 
+
   //RIGHT ARM
   ////////////////////
-
   this.armRightGroup = new THREE.Group();  
   var armRightCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0,0,0),
-    new THREE.Vector3(-7,-15,-3),
-    new THREE.Vector3(-5,-30,0),
+    new THREE.Vector3(-7,-12,-3),
+    new THREE.Vector3(-5,-24,0),
     ]);
-  var armRightGeom = new THREE.TubeGeometry(armRightCurve, 2, 3, 8, false);
+  var armRightGeom = new THREE.TubeGeometry(armRightCurve, 2, 2.75, 6, false);
 
   var armRight = new THREE.Mesh(armRightGeom, shirtMat);
-  armRight.position.set(-7,9,-2);
+  //armRight.position.set(-7,9,-1);
   armRight.castShadow = true;
   armRight.receiveShadow = false;  
   this.armRightGroup.add(armRight);
+  this.armRightGroup.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 0));
+  this.armRightGroup.position.set(-7,9,-1);
+
+  //RIGHT HAND
+  ////////////////////
+  var handGeom = new THREE.BoxGeometry(6, 6, 4.85);
+  var handRight = new THREE.Mesh(handGeom, skinMat);
+  handRight.position.set(-5,-26,0);
+  this.armRightGroup.add(handRight);  
   this.mesh.add(this.armRightGroup);
 
-  //Left ARM
-  ////////////////////
 
+  //Left ARM
+  ////////////////////  
   this.armLeftGroup = new THREE.Group();  
   var armLeftCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(0,0,0),
-    new THREE.Vector3(7,-15,-3),
-    new THREE.Vector3(5,-30,0),
+    new THREE.Vector3(7,-12,-3),
+    new THREE.Vector3(5,-24,0),
     ]);
-  var armLeftGeom = new THREE.TubeGeometry(armLeftCurve, 2, 3, 8, false);
+  var armLeftGeom = new THREE.TubeGeometry(armLeftCurve, 2, 2.75, 6, false);
 
   var armLeft = new THREE.Mesh(armLeftGeom, shirtMat);
-  armLeft.position.set(7,9,-2);
   armLeft.castShadow = true;
   armLeft.receiveShadow = false;  
   this.armLeftGroup.add(armLeft);
+  this.armLeftGroup.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 0));
+  this.armLeftGroup.position.set(7,9,-1);
+
+  //LEFT HAND
+  ////////////////////
+  var handLeft = new THREE.Mesh(handGeom, skinMat);
+  handLeft.position.set(5,-26,0);
+  this.armLeftGroup.add(handLeft);
+
   this.mesh.add(this.armLeftGroup);
 }
 
@@ -722,8 +739,11 @@ var Legs = function() {
   var belt = new THREE.Mesh(beltGeom, brownMat);
   belt.position.set(0, 2.5, 0);
 
-  this.mesh.add(waist, belt);
+  var buckleGeom = new THREE.BoxGeometry(2.5, 2.5, 1);
+  var buckle = new THREE.Mesh(buckleGeom, blackMat);
+  buckle.position.set(0, 2.5, 5.5);
 
+  this.mesh.add(waist, belt, buckle);
 
 
 }
@@ -753,7 +773,7 @@ function createCharacter() {
   head.mesh.position.y+=23;
   createTorso();
   createLegs();
-  legs.mesh.position.set(0,-15,-1);
+  legs.mesh.position.set(0,-13,-1);
 }
 
 
@@ -773,10 +793,13 @@ Head.prototype.Nod = function(){
 Head.prototype.eyeMove = function(){
 
   function blinkLoop(){
-  var isBlinking = false;
-  if ((Math.random()>.99) && (!isBlinking)) blink();
-    function blink() {
+    var isBlinking = false;
+
+    if ((!isBlinking) && (Math.random()>.99)) {
       isBlinking = true;
+      blink();
+    }  
+    function blink() {
       head.eyes.scale.y = 1;
       TweenMax.to(head.eyes.scale, .07, {
           y: 0, yoyo: true, repeat: 1, onComplete: function() {
@@ -805,11 +828,26 @@ Head.prototype.moustacheMove = function(){
   this.moustache.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.05 ;
 }
 
+//ARM ANIMATION
+////////////////////
+
+Torso.prototype.wave = function(){
+
+  this.armRightGroup.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
+
+  this.armLeftGroup.rotation.x = -Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
+
+}
+
+
 
 function loop(){
   head.Nod();
   head.eyeMove();
   head.moustacheMove();
+
+  torso.wave();
+
   render();  
   requestAnimationFrame(loop);
 }
