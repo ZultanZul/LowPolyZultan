@@ -5,14 +5,14 @@ console.log("                                                                \n 
 
 var scene,
     camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH,
-    renderer, container, controls;
+    renderer, container, controls,loaderManager,loaded;
 
 function createScene() {
   container = document.getElementById('container');
   HEIGHT = container.offsetHeight;
   WIDTH = container.offsetWidth;
   scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xffffff, 150,300);
+  //scene.fog = new THREE.Fog(0xffffff, 150,300);
   aspectRatio = WIDTH / HEIGHT;
   fieldOfView = 50;
   nearPlane = 1;
@@ -24,7 +24,7 @@ function createScene() {
     farPlane
     );
   camera.position.x = 0;
-  camera.position.z = 80;
+  camera.position.z = 100;
   camera.position.y = 0;
 
   renderer = new THREE.WebGLRenderer({ 
@@ -41,9 +41,28 @@ function createScene() {
   container.appendChild(renderer.domElement);
   window.addEventListener('resize', handleWindowResize, false);
   handleWindowResize();
-
-
+  //ORBIT CONTROLS
   controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+}
+
+var loaderManager = new THREE.LoadingManager();
+loaderManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+  console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+};
+loaderManager.onLoad = function ( ) {
+  console.log( 'Loading complete!');
+  finishedLoading();
+};
+loaderManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+  console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+};
+loaderManager.onError = function ( url ) {
+  console.log( 'There was an error loading ' + url );
+};
+
+function finishedLoading(){
+  loaded = true;
 }
 
 function handleWindowResize() {
@@ -62,7 +81,7 @@ function createLights() {
   globalLight = new THREE.HemisphereLight(0xffffff, 0x555555, 1);
   shadowLight = new THREE.DirectionalLight(0xffffff,  .4);
   backLight = new THREE.DirectionalLight(0xffffff, .4);
-  backLight.position.set(100, 100, -200);
+  //backLight.position.set(100, 100, -200);
 
   shadowLight.position.set(100, 250, 75);
   shadowLight.castShadow = true;
@@ -88,6 +107,7 @@ var Colors = {
   black: 0x2e2e2e,
   white: 0xffffff,
   lightBlue: 0x6295a8,
+  beige: 0xa49178
 };
 
 var skinMat = new THREE.MeshLambertMaterial({color:Colors.skin, flatShading:true});
@@ -97,20 +117,18 @@ var brownMat = new THREE.MeshLambertMaterial({color:Colors.brown, flatShading:tr
 var blackMat = new THREE.MeshLambertMaterial({color:Colors.black, flatShading:true});
 var whiteMat = new THREE.MeshPhongMaterial({color:Colors.white, flatShading:true});
 var blueMat = new THREE.MeshPhongMaterial({color:Colors.lightBlue, flatShading:true});
+var beigeMat = new THREE.MeshPhongMaterial({color:Colors.beige, flatShading:true});
 var normalMat = new THREE.MeshNormalMaterial({});
 
-var Zul = function() {
+var Head = function() {
 	
 	this.mesh = new THREE.Group();
-	this.body = new THREE.Group();
-	this.mesh.add(this.body);
+
 
 	var headGeom = new THREE.BoxBufferGeometry(16,16,16);
 	this.head = new THREE.Mesh(headGeom, skinMat);
   this.head.castShadow = true;
-  // this.head.receiveShadow = true;
-	this.head.position.y = 21;
-	this.body.add(this.head);
+  this.mesh.add(this.head);
 
   this.beard = new THREE.Group();
   this.beard.position.y = -7;
@@ -130,7 +148,8 @@ var Zul = function() {
     beardGeomMerged.merge(beard1.geometry, beard1.matrix);
 
     var beard2 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3, 1));
+    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3, 2));
+    beard2.scale.z = 0.8;
     beard2.updateMatrix();
     beardGeomMerged.merge(beard2.geometry, beard2.matrix);
 
@@ -145,21 +164,21 @@ var Zul = function() {
     beardGeomMerged.merge(beard4.geometry, beard4.matrix);
 
 
-  var beard2Geom = new THREE.BoxGeometry(3,14,16);
+  var beard2Geom = new THREE.BoxGeometry(3,14,10);
     beard2Geom.vertices[2].z-=2;
     beard2Geom.vertices[7].z-=2;
 
     var beard5 = new THREE.Mesh(beard2Geom, auburnMat);
-    beard5.applyMatrix( new THREE.Matrix4().makeTranslation(5, -5, 2));
+    beard5.applyMatrix( new THREE.Matrix4().makeTranslation(5, -5, 5.5));
     beard5.updateMatrix();
     beardGeomMerged.merge(beard5.geometry, beard5.matrix);
 
-  var beard3Geom = new THREE.BoxGeometry(3,14,16);
+  var beard3Geom = new THREE.BoxGeometry(3,14,10);
     beard3Geom.vertices[2].z-=2;
     beard3Geom.vertices[7].z-=2;
 
     var beard6 = new THREE.Mesh(beard3Geom, auburnMat);
-    beard6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -6, 2.5));
+    beard6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -6, 5.5));
     beard6.updateMatrix();
     beardGeomMerged.merge(beard6.geometry, beard6.matrix);
 
@@ -173,13 +192,24 @@ var Zul = function() {
     beardGeomMerged.merge(beard8.geometry, beard8.matrix);  
 
 
-  var beard4Geom = new THREE.BoxGeometry(1,14.5,16);
+  var beard4Geom = new THREE.BoxGeometry(1,14.5,10);
     beard4Geom.vertices[2].z-=1;
     beard4Geom.vertices[7].z-=1;
     var beard9 = new THREE.Mesh(beard4Geom, auburnMat);
-    beard9.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6.25, 2.75));
+    beard9.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6.25, 5.75));
     beard9.updateMatrix();
     beardGeomMerged.merge(beard9.geometry, beard9.matrix);  
+
+ var beard5Geom = new THREE.BoxGeometry(4,8,5);  
+    var beard10 = new THREE.Mesh(beard5Geom, auburnMat);
+    beard10.applyMatrix( new THREE.Matrix4().makeTranslation(-6, -1, -4));
+    beard10.updateMatrix();
+    beardGeomMerged.merge(beard10.geometry, beard10.matrix);  
+
+    var beard11 = new THREE.Mesh(beard5Geom, auburnMat);
+    beard11.applyMatrix( new THREE.Matrix4().makeTranslation(6, -1, -4));
+    beard11.updateMatrix();
+    beardGeomMerged.merge(beard11.geometry, beard11.matrix);  
 
   var beardMerged = new THREE.Mesh(beardGeomMerged, auburnMat);
   beardMerged.castShadow = true;
@@ -194,7 +224,7 @@ var Zul = function() {
 
   var teethGeom = new THREE.BoxGeometry(10,1,1);
   var teeth = new THREE.Mesh(teethGeom, whiteMat); 
-  teeth.position.set(0,1,0.1);
+  teeth.position.set(0,0.5,0.1);
   teeth.castShadow = false;
   teeth.receiveShadow = true;
   mouth.add(teeth)
@@ -560,60 +590,226 @@ var Zul = function() {
   this.head.add(earRight, earLeft, nose);
 }
 
-Zul.prototype.Nod = function(){
+var Torso = function() {
+
+  //TORSO - CHEST
+  ////////////////////////////////////
+  
+  this.mesh = new THREE.Group();
+
+  var textShirt = new THREE.TextureLoader(loaderManager).load( "images/fabric.png" );
+  textShirt.wrapS = THREE.RepeatWrapping;
+  textShirt.wrapT = THREE.RepeatWrapping;
+  textShirt.repeat.set( 7, 7 );
+
+  var shirtMat = new THREE.MeshLambertMaterial( {
+    map: textShirt
+  });
+
+  var chestGeom = new THREE.BoxGeometry(14, 24, 10, 1, 2, 1);
+    chestGeom.vertices[0].x+=2;
+    chestGeom.vertices[0].z+=2;
+    chestGeom.vertices[1].x+=2;
+    chestGeom.vertices[1].z-=2;
+    chestGeom.vertices[2].x+=1;
+    chestGeom.vertices[3].x+=1;
+
+    chestGeom.vertices[6].x-=2;
+    chestGeom.vertices[6].z-=2;
+    chestGeom.vertices[7].x-=2;
+    chestGeom.vertices[7].z+=2;
+    chestGeom.vertices[8].x-=1;
+    chestGeom.vertices[9].x-=1;
+
+  this.chest = new THREE.Mesh(chestGeom, shirtMat);
+  this.chest.position.set(0,-1,-1);
+  this.chest.castShadow = true;
+  // this.chest.receiveShadow = true;
+
+
+  //BUTTONS
+  ////////////////////////////////////
+  var buttonGeomMerged = new THREE.Geometry();
+
+  var buttonGeom = new THREE.CylinderGeometry(.75, .75, .75, 6 );
+  buttonGeom.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/2));
+  var button1 = new THREE.Mesh(buttonGeom, blackMat);
+  button1.applyMatrix( new THREE.Matrix4().makeTranslation(0, 3, 5.5));
+  button1.updateMatrix();
+  buttonGeomMerged.merge(button1.geometry, button1.matrix);
+
+  var button2 = new THREE.Mesh(buttonGeom, blackMat);
+
+  button2.applyMatrix( new THREE.Matrix4().makeTranslation(0, -1, 5));
+  button2.updateMatrix();
+  buttonGeomMerged.merge(button2.geometry, button2.matrix);
+
+  var button3 = new THREE.Mesh(buttonGeom, blackMat);
+  button3.applyMatrix( new THREE.Matrix4().makeTranslation(0, -5, 5));
+  button3.updateMatrix();
+  buttonGeomMerged.merge(button3.geometry, button3.matrix);
+
+  var button4 = new THREE.Mesh(buttonGeom, blackMat);
+  button4.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 5));
+  button4.updateMatrix();
+  buttonGeomMerged.merge(button4.geometry, button4.matrix);
+
+  var buttonsMerged = new THREE.Mesh(buttonGeomMerged, blackMat);
+  buttonsMerged.castShadow = true;
+  buttonsMerged.receiveShadow = true;
+
+  this.chest.add(buttonsMerged);
+  this.mesh.add(this.chest);
+
+  //NECK
+  ////////////////////////////////////
+  
+  var neckGeom = new THREE.BoxGeometry(8, 8, 8);
+  var neck = new THREE.Mesh(neckGeom, skinMat);
+  neck.position.set(0, 12, -2);
+  this.mesh.add(neck);
+
+  //RIGHT ARM
+  ////////////////////
+
+  this.armRightGroup = new THREE.Group();  
+  var armRightCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,0,0),
+    new THREE.Vector3(-7,-15,-3),
+    new THREE.Vector3(-5,-30,0),
+    ]);
+  var armRightGeom = new THREE.TubeGeometry(armRightCurve, 2, 3, 8, false);
+
+  var armRight = new THREE.Mesh(armRightGeom, shirtMat);
+  armRight.position.set(-7,9,-2);
+  armRight.castShadow = true;
+  armRight.receiveShadow = false;  
+  this.armRightGroup.add(armRight);
+  this.mesh.add(this.armRightGroup);
+
+  //Left ARM
+  ////////////////////
+
+  this.armLeftGroup = new THREE.Group();  
+  var armLeftCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,0,0),
+    new THREE.Vector3(7,-15,-3),
+    new THREE.Vector3(5,-30,0),
+    ]);
+  var armLeftGeom = new THREE.TubeGeometry(armLeftCurve, 2, 3, 8, false);
+
+  var armLeft = new THREE.Mesh(armLeftGeom, shirtMat);
+  armLeft.position.set(7,9,-2);
+  armLeft.castShadow = true;
+  armLeft.receiveShadow = false;  
+  this.armLeftGroup.add(armLeft);
+  this.mesh.add(this.armLeftGroup);
+}
+
+
+var Legs = function() {
+
+  //LEGS - WAIST
+  ////////////////////////////////////
+  
+  this.mesh = new THREE.Group();
+
+  var waistGeom = new THREE.BoxGeometry(14, 5, 10);
+  var waist = new THREE.Mesh(waistGeom, beigeMat);
+  waist.position.set(0, 0, 0);
+
+  var beltGeom = new THREE.BoxGeometry(15, 2, 11);
+  var belt = new THREE.Mesh(beltGeom, brownMat);
+  belt.position.set(0, 2.5, 0);
+
+  this.mesh.add(waist, belt);
+
+
+
+}
+
+
+
+
+var head, torso, legs;
+
+function createHead() {
+  head = new Head();
+  scene.add(head.mesh);
+}
+
+function createTorso() {
+  torso = new Torso();
+  scene.add(torso.mesh);
+}
+
+function createLegs() {
+  legs = new Legs();
+  scene.add(legs.mesh);
+}
+
+function createCharacter() {
+  createHead();
+  head.mesh.position.y+=23;
+  createTorso();
+  createLegs();
+  legs.mesh.position.set(0,-15,-1);
+}
+
+
+
+//HEAD ANIMATION
+////////////////////
+
+Head.prototype.Nod = function(){
 
   this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
 
-  this.body.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
+  //this.mesh.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
 }
 
-Zul.prototype.eyeMove = function(){
+Head.prototype.eyeMove = function(){
+
+  function blinkLoop(){
+  var isBlinking = false;
+  if ((Math.random()>.99) && (!isBlinking)) blink();
+    function blink() {
+      isBlinking = true;
+      head.eyes.scale.y = 1;
+      TweenMax.to(head.eyes.scale, .07, {
+          y: 0, yoyo: true, repeat: 1, onComplete: function() {
+             isBlinking = false;
+          }
+      });
+    }
+  }
+
+  blinkLoop();
 
   var distance = 1;
-  this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005)* -distance ;
   this.eyeBlueLeft.position.x = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBlueRight.position.y = Math.cos(Date.now() * 0.005)* -distance ;
+  this.eyeBlueLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
 
-  this.eyeBrowRight.position.y = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBrowRight.position.y = Math.cos(Date.now() * 0.005) * -distance ;
   this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
 }
 
-Zul.prototype.moustacheMove = function(){
+Head.prototype.moustacheMove = function(){
 
   var distance =.5;
-  this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
-  this.moustache.rotation.z = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
+  //this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
+  this.moustache.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.05 ;
 }
 
-function blinkLoop(){
-    var isBlinking;
-    if ((Math.random()>.99) || (isBlinking = false)) blink();
-
-    function blink() {
-        isBlinking = true;
-        zul.eyes.scale.y = 1;
-        TweenMax.to(zul.eyes.scale, .07, {
-            y: 0, yoyo: true, repeat: 1, onComplete: () => {
-               isBlinking = false;
-            }
-        });
-    }
-}
-
-var zul;
-
-function createZul() {
-  zul = new Zul();
-  zul.mesh.position.y=-15;
-  scene.add(zul.mesh);
-}
 
 function loop(){
-  zul.Nod();
-  zul.eyeMove();
-  zul.moustacheMove();
-  blinkLoop();
+  head.Nod();
+  head.eyeMove();
+  head.moustacheMove();
   render();  
   requestAnimationFrame(loop);
 }
@@ -628,6 +824,6 @@ window.addEventListener('load', init, false);
 function init(){
   createScene();
   createLights();
-  createZul();
+  createCharacter();
   loop();
 }
