@@ -100,17 +100,14 @@ var blueMat = new THREE.MeshPhongMaterial({color:Colors.lightBlue, flatShading:t
 var normalMat = new THREE.MeshNormalMaterial({});
 
 var Zul = function() {
-	
-	this.mesh = new THREE.Group();
-	this.body = new THREE.Group();
-	this.mesh.add(this.body);
+  
+  this.mesh = new THREE.Group();
 
-	var headGeom = new THREE.BoxBufferGeometry(16,16,16);
-	this.head = new THREE.Mesh(headGeom, skinMat);
+
+  var headGeom = new THREE.BoxBufferGeometry(16,16,16);
+  this.head = new THREE.Mesh(headGeom, skinMat);
   this.head.castShadow = true;
-  // this.head.receiveShadow = true;
-	this.head.position.y = 21;
-	this.body.add(this.head);
+  this.mesh.add(this.head);
 
   this.beard = new THREE.Group();
   this.beard.position.y = -7;
@@ -130,7 +127,8 @@ var Zul = function() {
     beardGeomMerged.merge(beard1.geometry, beard1.matrix);
 
     var beard2 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3, 1));
+    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3,7));
+    beard2.scale.z = 0.2;
     beard2.updateMatrix();
     beardGeomMerged.merge(beard2.geometry, beard2.matrix);
 
@@ -145,21 +143,21 @@ var Zul = function() {
     beardGeomMerged.merge(beard4.geometry, beard4.matrix);
 
 
-  var beard2Geom = new THREE.BoxGeometry(3,14,16);
+  var beard2Geom = new THREE.BoxGeometry(3,14,10);
     beard2Geom.vertices[2].z-=2;
     beard2Geom.vertices[7].z-=2;
 
     var beard5 = new THREE.Mesh(beard2Geom, auburnMat);
-    beard5.applyMatrix( new THREE.Matrix4().makeTranslation(5, -5, 2));
+    beard5.applyMatrix( new THREE.Matrix4().makeTranslation(5, -5, 5.5));
     beard5.updateMatrix();
     beardGeomMerged.merge(beard5.geometry, beard5.matrix);
 
-  var beard3Geom = new THREE.BoxGeometry(3,14,16);
+  var beard3Geom = new THREE.BoxGeometry(3,14,10);
     beard3Geom.vertices[2].z-=2;
     beard3Geom.vertices[7].z-=2;
 
     var beard6 = new THREE.Mesh(beard3Geom, auburnMat);
-    beard6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -6, 2.5));
+    beard6.applyMatrix( new THREE.Matrix4().makeTranslation(2, -6, 5.5));
     beard6.updateMatrix();
     beardGeomMerged.merge(beard6.geometry, beard6.matrix);
 
@@ -173,13 +171,24 @@ var Zul = function() {
     beardGeomMerged.merge(beard8.geometry, beard8.matrix);  
 
 
-  var beard4Geom = new THREE.BoxGeometry(1,14.5,16);
+  var beard4Geom = new THREE.BoxGeometry(1,14.5,10);
     beard4Geom.vertices[2].z-=1;
     beard4Geom.vertices[7].z-=1;
     var beard9 = new THREE.Mesh(beard4Geom, auburnMat);
-    beard9.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6.25, 2.75));
+    beard9.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6.25, 5.75));
     beard9.updateMatrix();
     beardGeomMerged.merge(beard9.geometry, beard9.matrix);  
+
+ var beard5Geom = new THREE.BoxGeometry(4,8,5);  
+    var beard10 = new THREE.Mesh(beard5Geom, auburnMat);
+    beard10.applyMatrix( new THREE.Matrix4().makeTranslation(-6, -1, -4));
+    beard10.updateMatrix();
+    beardGeomMerged.merge(beard10.geometry, beard10.matrix);  
+
+    var beard11 = new THREE.Mesh(beard5Geom, auburnMat);
+    beard11.applyMatrix( new THREE.Matrix4().makeTranslation(6, -1, -4));
+    beard11.updateMatrix();
+    beardGeomMerged.merge(beard11.geometry, beard11.matrix);  
 
   var beardMerged = new THREE.Mesh(beardGeomMerged, auburnMat);
   beardMerged.castShadow = true;
@@ -194,7 +203,7 @@ var Zul = function() {
 
   var teethGeom = new THREE.BoxGeometry(10,1,1);
   var teeth = new THREE.Mesh(teethGeom, whiteMat); 
-  teeth.position.set(0,1,0.1);
+  teeth.position.set(0,0.5,0.1);
   teeth.castShadow = false;
   teeth.receiveShadow = true;
   mouth.add(teeth)
@@ -558,6 +567,7 @@ var Zul = function() {
 
 
   this.head.add(earRight, earLeft, nose);
+
 }
 
 Zul.prototype.Nod = function(){
@@ -566,10 +576,29 @@ Zul.prototype.Nod = function(){
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
 
-  this.body.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
+  this.mesh.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
 }
 
 Zul.prototype.eyeMove = function(){
+
+    function blinkLoop(){
+    var isBlinking = false;
+
+    if ((!isBlinking) && (Math.random()>0.99)) {
+      isBlinking = true;
+      blink();
+    }  
+    function blink() {
+      zul.eyes.scale.y = 1;
+      TweenMax.to(zul.eyes.scale, .07, {
+          y: 0, yoyo: true, repeat: 1, onComplete: function() {
+             isBlinking = false;
+          }
+      });
+    }
+  }
+
+  blinkLoop();
 
   var distance = 1;
   this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005) * distance ;
@@ -586,26 +615,12 @@ Zul.prototype.moustacheMove = function(){
   this.moustache.rotation.z = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
 }
 
-function blinkLoop(){
-    var isBlinking;
-    if ((Math.random()>.99) || (isBlinking = false)) blink();
 
-    function blink() {
-        isBlinking = true;
-        zul.eyes.scale.y = 1;
-        TweenMax.to(zul.eyes.scale, .07, {
-            y: 0, yoyo: true, repeat: 1, onComplete: () => {
-               isBlinking = false;
-            }
-        });
-    }
-}
 
 var zul;
 
 function createZul() {
   zul = new Zul();
-  zul.mesh.position.y=-15;
   scene.add(zul.mesh);
 }
 
@@ -613,7 +628,6 @@ function loop(){
   zul.Nod();
   zul.eyeMove();
   zul.moustacheMove();
-  blinkLoop();
   render();  
   requestAnimationFrame(loop);
 }
