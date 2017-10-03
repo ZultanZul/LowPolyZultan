@@ -1,6 +1,6 @@
 "use strict";
 //NCC-1701
-console.log("                                                                \n  ___________________  *       _-_                   *          \n  \\\%c==============%c_%c=%c_/ ____.---'---`---.____   *        *     *  \n              \\\_ \\\    \\\----._________.----/                     \n         *      \\\ \\\   /  /    `-_-'              *            * \n  *         __,--`.`-'..'-_                            *        \n           /____          ||    *         *                     \n                `--.____,-'                                     \n                                                                ", "color: #ff0000;", "color: #000000;", "color: #0000ff;", "color: #000000;");
+console.log("                                                                \n  ___________________  *       _-_                   *          \n  \\\%c==============%c_=_/ ____.---'---`---.____   *        *     *  \n              \\\_ \\\    \\\----._________.----/                     \n         *      \\\ \\\   /  /    `-_-'              *            * \n  *         __,--`.`-'..'-_                            *        \n           /____          ||    *         *                     \n                `--.____,-'                                     \n                                                                ", "color: #ff0000;", "color: #000000;");
 
 
 var scene,
@@ -747,6 +747,7 @@ var Legs = function() {
   this.mesh.add(waist, belt, buckle);
 
 
+
 }
 
 
@@ -796,7 +797,7 @@ Head.prototype.eyeMove = function(){
   function blinkLoop(){
     var isBlinking = false;
 
-    if ((!isBlinking) && (Math.random()>.99)) {
+    if ((!isBlinking) && (Math.random()>0.99)) {
       isBlinking = true;
       blink();
     }  
