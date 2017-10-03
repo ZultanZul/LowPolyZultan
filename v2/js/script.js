@@ -833,10 +833,11 @@ Head.prototype.moustacheMove = function(){
 
 Torso.prototype.wave = function(){
 
-  this.armRightGroup.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
+  this.armRightGroup.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
+  this.armLeftGroup.rotation.x = -Math.cos(Date.now() * 0.002) * Math.PI * 0.1;
 
-  this.armLeftGroup.rotation.x = -Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
-
+  this.armRightGroup.rotation.z = Math.sin(Date.now() * 0.002) * Math.PI * 0.03;
+  this.armLeftGroup.rotation.z = Math.cos(Date.now() * 0.002) * Math.PI * 0.03;
 }
 
 
