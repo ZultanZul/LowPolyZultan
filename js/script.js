@@ -99,7 +99,7 @@ var whiteMat = new THREE.MeshPhongMaterial({color:Colors.white, flatShading:true
 var blueMat = new THREE.MeshPhongMaterial({color:Colors.lightBlue, flatShading:true});
 var normalMat = new THREE.MeshNormalMaterial({});
 
-var Zul = function() {
+var Head = function() {
   
   this.mesh = new THREE.Group();
 
@@ -570,7 +570,7 @@ var Zul = function() {
 
 }
 
-Zul.prototype.Nod = function(){
+Head.prototype.Nod = function(){
 
   this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
@@ -579,7 +579,7 @@ Zul.prototype.Nod = function(){
   this.mesh.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
 }
 
-Zul.prototype.eyeMove = function(){
+Head.prototype.eyeMove = function(){
 
     function blinkLoop(){
     var isBlinking = false;
@@ -589,8 +589,8 @@ Zul.prototype.eyeMove = function(){
       blink();
     }  
     function blink() {
-      zul.eyes.scale.y = 1;
-      TweenMax.to(zul.eyes.scale, .07, {
+      head.eyes.scale.y = 1;
+      TweenMax.to(head.eyes.scale, .07, {
           y: 0, yoyo: true, repeat: 1, onComplete: function() {
              isBlinking = false;
           }
@@ -608,7 +608,7 @@ Zul.prototype.eyeMove = function(){
   this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
 }
 
-Zul.prototype.moustacheMove = function(){
+Head.prototype.moustacheMove = function(){
 
   var distance =.5;
   this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
@@ -617,17 +617,17 @@ Zul.prototype.moustacheMove = function(){
 
 
 
-var zul;
+var head;
 
-function createZul() {
-  zul = new Zul();
-  scene.add(zul.mesh);
+function createHead() {
+  head = new Head();
+  scene.add(head.mesh);
 }
 
 function loop(){
-  zul.Nod();
-  zul.eyeMove();
-  zul.moustacheMove();
+  head.Nod();
+  head.eyeMove();
+  head.moustacheMove();
   render();  
   requestAnimationFrame(loop);
 }
@@ -642,6 +642,6 @@ window.addEventListener('load', init, false);
 function init(){
   createScene();
   createLights();
-  createZul();
+  createHead();
   loop();
 }
