@@ -107,7 +107,8 @@ var Colors = {
   black: 0x2e2e2e,
   white: 0xffffff,
   lightBlue: 0x6295a8,
-  beige: 0xa49178
+  beige: 0xa49178,
+  yellow:0xfff000
 };
 
 var skinMat = new THREE.MeshLambertMaterial({color:Colors.skin, flatShading:true});
@@ -118,6 +119,7 @@ var blackMat = new THREE.MeshLambertMaterial({color:Colors.black, flatShading:tr
 var whiteMat = new THREE.MeshPhongMaterial({color:Colors.white, flatShading:true});
 var blueMat = new THREE.MeshPhongMaterial({color:Colors.lightBlue, flatShading:true});
 var beigeMat = new THREE.MeshPhongMaterial({color:Colors.beige, flatShading:true});
+var yellowMat = new THREE.MeshPhongMaterial({color:Colors.yellow, flatShading:true});
 var normalMat = new THREE.MeshNormalMaterial({});
 
 var Head = function() {
@@ -590,6 +592,36 @@ var Head = function() {
   this.head.add(earRight, earLeft, nose);
 }
 
+var Stars = function() {
+
+  //Stars - WAIST
+  ////////////////////////////////////
+  
+  this.mesh = new THREE.Group();
+
+  var pts = [], numPts = 5;
+  for ( var i = 0; i < numPts * 2; i ++ ) {
+    var l = i % 2 == 1 ? 2 : 4;
+    var a = i / numPts * Math.PI;
+    pts.push( new THREE.Vector2 ( Math.cos( a ) * l, Math.sin( a ) * l ) );
+  }
+  var starShape = new THREE.Shape( pts );
+
+  var extrudeSettings = {
+    amount      : 1,
+    steps     : 1,
+    bevelEnabled  : false,
+  };
+  var starGeom = new THREE.ExtrudeGeometry( starShape, extrudeSettings );
+  var star = new THREE.Mesh( starGeom, yellowMat );
+
+  star.position.set(0,0,-20);
+
+  this.mesh.add(star);
+
+}
+
+
 var Torso = function() {
 
   //TORSO - CHEST
@@ -752,12 +784,14 @@ var Legs = function() {
 
 
 
-
-var head, torso, legs;
+var head, torso, legs, stars;
 
 function createHead() {
   head = new Head();
   scene.add(head.mesh);
+
+  stars = new Stars();
+  scene.add(stars.mesh);
 }
 
 function createTorso() {
@@ -769,6 +803,7 @@ function createLegs() {
   legs = new Legs();
   scene.add(legs.mesh);
 }
+
 
 function createCharacter() {
   createHead();
