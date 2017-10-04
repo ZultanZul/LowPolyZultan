@@ -897,12 +897,13 @@ Head.prototype.moustacheMove = function(){
 
 StarsGroup.prototype.spinScale = function(){
 
-  this.mesh.rotation.z += 0.01;
+  this.mesh.rotation.z += 0.02;
 
   for (var i = 0; i <starArray.length; i++){
    // starArray[i].mesh.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
-    starArray[i].mesh.rotation.z += 0.1;
-    starArray[i].mesh.rotation.x += 0.05;
+    starArray[i].mesh.rotation.z += 0-Math.random()*0.15;
+    starArray[i].mesh.rotation.x += 0-Math.random()*0.05;
+
   }
 }
 
