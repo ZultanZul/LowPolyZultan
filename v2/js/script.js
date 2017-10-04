@@ -592,7 +592,7 @@ var Head = function() {
   this.head.add(earRight, earLeft, nose);
 }
 
-var Stars = function() {
+var Star = function() {
 
   //Stars - WAIST
   ////////////////////////////////////
@@ -601,25 +601,57 @@ var Stars = function() {
 
   var pts = [], numPts = 5;
   for ( var i = 0; i < numPts * 2; i ++ ) {
-    var l = i % 2 == 1 ? 2 : 4;
+    var l = i % 2 == 1 ? 1 : 2;
     var a = i / numPts * Math.PI;
     pts.push( new THREE.Vector2 ( Math.cos( a ) * l, Math.sin( a ) * l ) );
   }
   var starShape = new THREE.Shape( pts );
 
   var extrudeSettings = {
-    amount      : 1,
+    amount      : 0.5,
     steps     : 1,
     bevelEnabled  : false,
   };
   var starGeom = new THREE.ExtrudeGeometry( starShape, extrudeSettings );
   var star = new THREE.Mesh( starGeom, yellowMat );
-
-  star.position.set(0,0,-20);
-
+  star.rotation.x = Math.PI/2;
   this.mesh.add(star);
-
 }
+
+var starArray = [];
+
+var StarsGroup = function(){
+
+  this.mesh = new THREE.Object3D();
+
+  this.nStars = 15;
+
+  var stepAngle = Math.PI*2 / this.nStars;
+
+  // Create the Stars
+  for(var i=0; i<this.nStars; i++){
+  
+    this.s = new Star();
+    var a = stepAngle*i;
+    var r = 15;
+
+    this.s.mesh.position.y = Math.sin(a)*r;
+    this.s.mesh.position.x = Math.cos(a)*r;    
+
+    this.s.mesh.rotation.z = a + Math.PI/2;
+    this.s.mesh.position.z = 0-Math.random()*3;
+
+    // // random scale for each cloud
+    var sc = 0.5+Math.random()*.6;
+    this.s.mesh.scale.set(sc,sc,sc);
+
+    this.mesh.add(this.s.mesh);
+    starArray.push(this.s);
+  }
+  this.mesh.rotation.x = Math.PI/2;
+}
+
+
 
 
 var Torso = function() {
@@ -778,8 +810,6 @@ var Legs = function() {
 
   this.mesh.add(waist, belt, buckle);
 
-
-
 }
 
 
@@ -790,7 +820,7 @@ function createHead() {
   head = new Head();
   scene.add(head.mesh);
 
-  stars = new Stars();
+  stars = new StarsGroup();
   scene.add(stars.mesh);
 }
 
@@ -804,10 +834,10 @@ function createLegs() {
   scene.add(legs.mesh);
 }
 
-
 function createCharacter() {
   createHead();
-  head.mesh.position.y+=23;
+  head.mesh.position.set(0,23,0);
+  stars.mesh.position.set(0,32,0);
   createTorso();
   createLegs();
   legs.mesh.position.set(0,-13,-1);
@@ -861,8 +891,19 @@ Head.prototype.eyeMove = function(){
 Head.prototype.moustacheMove = function(){
 
   var distance =.5;
-  //this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance ;
   this.moustache.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.05 ;
+}
+
+
+StarsGroup.prototype.spinScale = function(){
+
+  this.mesh.rotation.z += 0.01;
+
+  for (var i = 0; i <starArray.length; i++){
+   // starArray[i].mesh.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.1 ;
+    starArray[i].mesh.rotation.z += 0.1;
+    starArray[i].mesh.rotation.x += 0.05;
+  }
 }
 
 //ARM ANIMATION
@@ -884,7 +925,7 @@ function loop(){
   head.Nod();
   head.eyeMove();
   head.moustacheMove();
-
+  stars.spinScale();
   torso.wave();
 
   render();  
