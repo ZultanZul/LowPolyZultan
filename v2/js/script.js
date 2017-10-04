@@ -594,7 +594,7 @@ var Head = function() {
 
 var Star = function() {
 
-  //Stars - WAIST
+  //STAR
   ////////////////////////////////////
   
   this.mesh = new THREE.Group();
@@ -810,6 +810,53 @@ var Legs = function() {
 
   this.mesh.add(waist, belt, buckle);
 
+  this.legRightGroup = new THREE.Group(); 
+  this.legLeftGroup = new THREE.Group(); 
+
+  var legUpperGeom = new THREE.BoxGeometry(6.75, 12, 10);
+    legUpperGeom.vertices[2].z-=1;
+    legUpperGeom.vertices[3].z+=1;
+    legUpperGeom.vertices[6].z+=1;
+    legUpperGeom.vertices[7].z-=1;
+
+  this.legUpperRight = new THREE.Mesh(legUpperGeom, beigeMat);
+  this.legRightGroup.add(this.legUpperRight);
+  legUpperGeom.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6, 0));
+  this.legRightGroup.position.set(-3.65, -1.5, 0);
+
+  var legLowerGeom = new THREE.BoxGeometry(6.75, 12, 8);
+    legLowerGeom.vertices[2].z-=1;
+    legLowerGeom.vertices[3].z+=1;
+    legLowerGeom.vertices[6].z+=1;
+    legLowerGeom.vertices[7].z-=1;
+
+  this.legLowerRight = new THREE.Mesh(legLowerGeom, beigeMat);
+  this.legRightGroup.add(this.legLowerRight);
+  legLowerGeom.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6, 0));
+  this.legLowerRight.position.set(0, -10.5, 0);
+
+  var footGeom = new THREE.BoxGeometry(6.85, 3, 10);
+  this.footRight = new THREE.Mesh(footGeom, blackMat);
+  this.footRight.position.set(0, -12, 1.75);
+  this.legLowerRight.add(this.footRight); 
+
+  this.mesh.add(this.legRightGroup);
+
+  this.legUpperLeft = new THREE.Mesh(legUpperGeom, beigeMat);
+  this.legLeftGroup.add(this.legUpperLeft);
+  this.legLeftGroup.position.set(3.65, -1.5, 0);
+
+  this.legLowerLeft = new THREE.Mesh(legLowerGeom, beigeMat);
+  this.legLowerLeft.position.set(0, -10.5, 0);
+  this.legLeftGroup.add(this.legLowerLeft);
+
+  this.footLeft = new THREE.Mesh(footGeom, blackMat);
+  this.footLeft.position.set(0, -12, 1.75);
+  this.legLowerLeft.add(this.footLeft); 
+
+  this.mesh.add(this.legLeftGroup);
+
+
 }
 
 
@@ -921,6 +968,24 @@ Torso.prototype.wave = function(){
 }
 
 
+//LEG ANIMATION
+////////////////////
+
+Legs.prototype.walk = function(){
+
+  this.legRightGroup.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
+  this.legLeftGroup.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
+
+
+
+
+  this.legLowerRight.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
+  this.legLowerRight.rotation.x = Math.max (0, this.legLowerRight.rotation.x); 
+
+  this.legLowerLeft.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
+  this.legLowerLeft.rotation.x = Math.max (this.legLowerLeft.rotation.x, 0 ); 
+}
+
 
 function loop(){
   head.Nod();
@@ -928,7 +993,7 @@ function loop(){
   head.moustacheMove();
   stars.spinScale();
   torso.wave();
-
+  legs.walk();
   render();  
   requestAnimationFrame(loop);
 }
