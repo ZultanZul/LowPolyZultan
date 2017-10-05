@@ -895,33 +895,28 @@ function createCharacter() {
 //HEAD ANIMATION
 ////////////////////
 
-Head.prototype.Nod = function(){
+Head.prototype.dizzy = function(){
 
   this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
 
-  //this.mesh.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
-}
-
-Head.prototype.eyeMove = function(){
-
   function blinkLoop(){
-    var isBlinking = false;
+      var isBlinking = false;
 
-    if ((!isBlinking) && (Math.random()>0.99)) {
-      isBlinking = true;
-      blink();
-    }  
-    function blink() {
-      head.eyes.scale.y = 1;
-      TweenMax.to(head.eyes.scale, .07, {
-          y: 0, yoyo: true, repeat: 1, onComplete: function() {
-             isBlinking = false;
-          }
-      });
-    }
-  }
+      if ((!isBlinking) && (Math.random()>0.99)) {
+        isBlinking = true;
+        blink();
+      }  
+      function blink() {
+        head.eyes.scale.y = 1;
+        TweenMax.to(head.eyes.scale, .07, {
+            y: 0, yoyo: true, repeat: 1, onComplete: function() {
+               isBlinking = false;
+            }
+        });
+      }
+}
 
   blinkLoop();
 
@@ -933,12 +928,10 @@ Head.prototype.eyeMove = function(){
 
   this.eyeBrowRight.position.y = Math.cos(Date.now() * 0.005) * -distance ;
   this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
-}
 
-Head.prototype.moustacheMove = function(){
 
-  var distance =.5;
   this.moustache.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.05 ;
+
 }
 
 
@@ -983,29 +976,12 @@ Legs.prototype.walk = function(){
   this.legLowerLeft.rotation.x = Math.max (this.legLowerLeft.rotation.x, 0 ); 
 }
 
-//LEG ANIMATION
-////////////////////
-
-Legs.prototype.stumble = function(){
-
-  this.legRightGroup.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
-  this.legLeftGroup.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
-
-  this.legLowerRight.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
-  this.legLowerRight.rotation.x = Math.max (0, this.legLowerRight.rotation.x); 
-
-  this.legLowerLeft.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
-  this.legLowerLeft.rotation.x = Math.max (this.legLowerLeft.rotation.x, 0 ); 
-}
-
 
 function loop(){
-  head.Nod();
-  head.eyeMove();
-  head.moustacheMove();
+  head.dizzy();
+
   stars.spinScale();
-  torso.wave();
-  legs.walk();
+
   render();  
   requestAnimationFrame(loop);
 }
