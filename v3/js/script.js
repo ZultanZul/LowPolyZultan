@@ -150,8 +150,8 @@ var Head = function() {
     beardGeomMerged.merge(beard1.geometry, beard1.matrix);
 
     var beard2 = new THREE.Mesh(beard1Geom, auburnMat);
-    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3,7));
-    beard2.scale.z = 0.2;
+    beard2.applyMatrix( new THREE.Matrix4().makeTranslation(7, -3,2));
+    beard2.scale.z = 0.8;
     beard2.updateMatrix();
     beardGeomMerged.merge(beard2.geometry, beard2.matrix);
 
@@ -202,14 +202,14 @@ var Head = function() {
     beard9.updateMatrix();
     beardGeomMerged.merge(beard9.geometry, beard9.matrix);  
 
- var beard5Geom = new THREE.BoxGeometry(4,8,5);  
+ var beard5Geom = new THREE.BoxGeometry(4,8,8);  
     var beard10 = new THREE.Mesh(beard5Geom, auburnMat);
-    beard10.applyMatrix( new THREE.Matrix4().makeTranslation(-6, -1, -4));
+    beard10.applyMatrix( new THREE.Matrix4().makeTranslation(-6, -1, -2));
     beard10.updateMatrix();
     beardGeomMerged.merge(beard10.geometry, beard10.matrix);  
 
     var beard11 = new THREE.Mesh(beard5Geom, auburnMat);
-    beard11.applyMatrix( new THREE.Matrix4().makeTranslation(6, -1, -4));
+    beard11.applyMatrix( new THREE.Matrix4().makeTranslation(6, -1, -2));
     beard11.updateMatrix();
     beardGeomMerged.merge(beard11.geometry, beard11.matrix);  
 
@@ -652,285 +652,87 @@ var StarsGroup = function(){
 }
 
 
-
-
-var Torso = function() {
-
-  //TORSO - CHEST
-  ////////////////////////////////////
-  
-  this.mesh = new THREE.Group();
-
-  var textShirt = new THREE.TextureLoader(loaderManager).load( "images/fabric.png" );
-  textShirt.wrapS = THREE.RepeatWrapping;
-  textShirt.wrapT = THREE.RepeatWrapping;
-  textShirt.repeat.set( 7, 7 );
-
-  var shirtMat = new THREE.MeshLambertMaterial( {
-    map: textShirt
-  });
-
-  var chestGeom = new THREE.BoxGeometry(14, 21, 10, 1, 2, 1);
-    chestGeom.vertices[0].x+=2;
-    chestGeom.vertices[0].z+=2;
-    chestGeom.vertices[1].x+=1;
-    chestGeom.vertices[1].z-=1;
-    chestGeom.vertices[2].x+=1;
-    chestGeom.vertices[3].x+=1;
-
-    chestGeom.vertices[6].x-=1;
-    chestGeom.vertices[6].z-=1;
-    chestGeom.vertices[7].x-=2;
-    chestGeom.vertices[7].z+=2;
-    chestGeom.vertices[8].x-=1;
-    chestGeom.vertices[9].x-=1;
-
-  this.chest = new THREE.Mesh(chestGeom, shirtMat);
-  this.chest.position.set(0,0.5,-1);
-  this.chest.castShadow = true;
-  // this.chest.receiveShadow = true;
-
-
-  //BUTTONS
-  ////////////////////////////////////
-  var buttonGeomMerged = new THREE.Geometry();
-
-  var buttonGeom = new THREE.CylinderGeometry(.75, .75, .75, 6 );
-  buttonGeom.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI/2));
-  var button1 = new THREE.Mesh(buttonGeom, blackMat);
-  button1.applyMatrix( new THREE.Matrix4().makeTranslation(0, 2, 5.25));
-  button1.updateMatrix();
-  buttonGeomMerged.merge(button1.geometry, button1.matrix);
-
-  var button2 = new THREE.Mesh(buttonGeom, blackMat);
-
-  button2.applyMatrix( new THREE.Matrix4().makeTranslation(0, -1.5, 5));
-  button2.updateMatrix();
-  buttonGeomMerged.merge(button2.geometry, button2.matrix);
-
-  var button3 = new THREE.Mesh(buttonGeom, blackMat);
-  button3.applyMatrix( new THREE.Matrix4().makeTranslation(0, -5, 5));
-  button3.updateMatrix();
-  buttonGeomMerged.merge(button3.geometry, button3.matrix);
-
-  var button4 = new THREE.Mesh(buttonGeom, blackMat);
-  button4.applyMatrix( new THREE.Matrix4().makeTranslation(0, -8.5, 5));
-  button4.updateMatrix();
-  buttonGeomMerged.merge(button4.geometry, button4.matrix);
-
-  var buttonsMerged = new THREE.Mesh(buttonGeomMerged, blackMat);
-  buttonsMerged.castShadow = true;
-  buttonsMerged.receiveShadow = true;
-
-  this.chest.add(buttonsMerged);
-  this.mesh.add(this.chest);
-
-  //NECK
-  ////////////////////////////////////
-  
-  var neckGeom = new THREE.BoxGeometry(8, 8, 8);
-  var neck = new THREE.Mesh(neckGeom, skinMat);
-  neck.position.set(0, 12, -2);
-  this.mesh.add(neck);
-
-
-  //RIGHT ARM
-  ////////////////////
-
-  this.armRightGroup = new THREE.Group();  
-  var armRightCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0,0,0),
-    new THREE.Vector3(-7,-12,-3),
-    new THREE.Vector3(-5,-24,0),
-    ]);
-  var armRightGeom = new THREE.TubeGeometry(armRightCurve, 2, 2.75, 6, false);
-
-  var armRight = new THREE.Mesh(armRightGeom, shirtMat);
-  //armRight.position.set(-7,9,-1);
-  armRight.castShadow = true;
-  armRight.receiveShadow = false;  
-  this.armRightGroup.add(armRight);
-  this.armRightGroup.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 0));
-  this.armRightGroup.position.set(-7,9,-1);
-
-  //RIGHT HAND
-  ////////////////////
-  var handGeom = new THREE.BoxGeometry(6, 6, 4.85);
-  var handRight = new THREE.Mesh(handGeom, skinMat);
-  handRight.position.set(-5,-26,0);
-  this.armRightGroup.add(handRight);  
-  this.mesh.add(this.armRightGroup);
-
-
-  //Left ARM
-  ////////////////////  
-  this.armLeftGroup = new THREE.Group();  
-  var armLeftCurve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0,0,0),
-    new THREE.Vector3(7,-12,-3),
-    new THREE.Vector3(5,-24,0),
-    ]);
-  var armLeftGeom = new THREE.TubeGeometry(armLeftCurve, 2, 2.75, 6, false);
-
-  var armLeft = new THREE.Mesh(armLeftGeom, shirtMat);
-  armLeft.castShadow = true;
-  armLeft.receiveShadow = false;  
-  this.armLeftGroup.add(armLeft);
-  this.armLeftGroup.applyMatrix( new THREE.Matrix4().makeTranslation(0, -9, 0));
-  this.armLeftGroup.position.set(7,9,-1);
-
-  //LEFT HAND
-  ////////////////////
-  var handLeft = new THREE.Mesh(handGeom, skinMat);
-  handLeft.position.set(5,-26,0);
-  this.armLeftGroup.add(handLeft);
-
-  this.mesh.add(this.armLeftGroup);
-}
-
-
-var Legs = function() {
-
-  //LEGS - WAIST
-  ////////////////////////////////////
-  
-  this.mesh = new THREE.Group();
-
-  var waistGeom = new THREE.BoxGeometry(14, 5, 10);
-  var waist = new THREE.Mesh(waistGeom, beigeMat);
-  waist.position.set(0, 0, 0);
-
-  var beltGeom = new THREE.BoxGeometry(15, 2, 11);
-  var belt = new THREE.Mesh(beltGeom, brownMat);
-  belt.position.set(0, 2.5, 0);
-
-  var buckleGeom = new THREE.BoxGeometry(2.5, 2.5, 1);
-  var buckle = new THREE.Mesh(buckleGeom, blackMat);
-  buckle.position.set(0, 2.5, 5.5);
-
-  this.mesh.add(waist, belt, buckle);
-
-  this.legRightGroup = new THREE.Group(); 
-  this.legLeftGroup = new THREE.Group(); 
-
-  var legUpperGeom = new THREE.BoxGeometry(6.75, 12, 10);
-    legUpperGeom.vertices[2].z-=1;
-    legUpperGeom.vertices[3].z+=1;
-    legUpperGeom.vertices[6].z+=1;
-    legUpperGeom.vertices[7].z-=1;
-
-  this.legUpperRight = new THREE.Mesh(legUpperGeom, beigeMat);
-  this.legRightGroup.add(this.legUpperRight);
-  legUpperGeom.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6, 0));
-  this.legRightGroup.position.set(-3.65, -1.5, 0);
-
-  var legLowerGeom = new THREE.BoxGeometry(6.75, 12, 8);
-    legLowerGeom.vertices[2].z-=1;
-    legLowerGeom.vertices[3].z+=1;
-    legLowerGeom.vertices[6].z+=1;
-    legLowerGeom.vertices[7].z-=1;
-
-  this.legLowerRight = new THREE.Mesh(legLowerGeom, beigeMat);
-  this.legRightGroup.add(this.legLowerRight);
-  legLowerGeom.applyMatrix( new THREE.Matrix4().makeTranslation(0, -6, 0));
-  this.legLowerRight.position.set(0, -10.5, 0);
-
-  var footGeom = new THREE.BoxGeometry(6.85, 3, 10);
-  this.footRight = new THREE.Mesh(footGeom, blackMat);
-  this.footRight.position.set(0, -12, 1.75);
-  this.legLowerRight.add(this.footRight); 
-
-  this.mesh.add(this.legRightGroup);
-
-  this.legUpperLeft = new THREE.Mesh(legUpperGeom, beigeMat);
-  this.legLeftGroup.add(this.legUpperLeft);
-  this.legLeftGroup.position.set(3.65, -1.5, 0);
-
-  this.legLowerLeft = new THREE.Mesh(legLowerGeom, beigeMat);
-  this.legLowerLeft.position.set(0, -10.5, 0);
-  this.legLeftGroup.add(this.legLowerLeft);
-
-  this.footLeft = new THREE.Mesh(footGeom, blackMat);
-  this.footLeft.position.set(0, -12, 1.75);
-  this.legLowerLeft.add(this.footLeft); 
-
-  this.mesh.add(this.legLeftGroup);
-
-
-}
-
-
-
-var head, torso, legs, stars;
+var head, stars;
 
 function createHead() {
   head = new Head();
   scene.add(head.mesh);
-
   stars = new StarsGroup();
   scene.add(stars.mesh);
 }
 
-function createTorso() {
-  torso = new Torso();
-  scene.add(torso.mesh);
-}
-
-function createLegs() {
-  legs = new Legs();
-  scene.add(legs.mesh);
-}
 
 function createCharacter() {
   createHead();
-  head.mesh.position.set(0,23,0);
-  stars.mesh.position.set(0,32,0);
-  createTorso();
-  createLegs();
-  legs.mesh.position.set(0,-13,-1);
+  head.mesh.position.set(0,0,0);
+  stars.mesh.position.set(0,9,0);
 }
 
+//BLINK
+////////////////////
 
+function blinkLoop(){
+  var isBlinking = false;
 
-//HEAD ANIMATION
+  if ((!isBlinking) && (Math.random()>0.99)) {
+    isBlinking = true;
+    blink();
+  }  
+
+  function blink() {
+    head.eyes.scale.y = 1;
+    TweenMax.to(head.eyes.scale, .07, {
+        y: 0, yoyo: true, repeat: 1, onComplete: function() {
+           isBlinking = false;
+        }
+    });
+  }
+}
+
+//HEAD ANIMATIONS
 ////////////////////
 
 Head.prototype.dizzy = function(){
+
+  var distance = 1;
 
   this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
   this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
   this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
 
-  function blinkLoop(){
-      var isBlinking = false;
-
-      if ((!isBlinking) && (Math.random()>0.99)) {
-        isBlinking = true;
-        blink();
-      }  
-      function blink() {
-        head.eyes.scale.y = 1;
-        TweenMax.to(head.eyes.scale, .07, {
-            y: 0, yoyo: true, repeat: 1, onComplete: function() {
-               isBlinking = false;
-            }
-        });
-      }
-}
-
-  blinkLoop();
-
-  var distance = 1;
   this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005)* -distance ;
   this.eyeBlueLeft.position.x = Math.sin(Date.now() * 0.005) * distance ;
   this.eyeBlueRight.position.y = Math.cos(Date.now() * 0.005)* -distance ;
   this.eyeBlueLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
-
   this.eyeBrowRight.position.y = Math.cos(Date.now() * 0.005) * -distance ;
   this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
 
-
   this.moustache.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.05 ;
+
+  blinkLoop();
+  stars.spinScale();
+
+}
+
+Head.prototype.idle = function(){
+
+  var distance = 1;
+
+  this.head.rotation.z = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ;
+  this.head.rotation.x = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
+  this.head.rotation.y = Math.sin(Date.now() * 0.005) * Math.PI * 0.01 ; 
+
+  this.eyeBlueRight.position.x = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBlueLeft.position.x = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBrowRight.position.y = Math.sin(Date.now() * 0.005) * distance ;
+  this.eyeBrowLeft.position.y = Math.cos(Date.now() * 0.005) * distance ;
+
+  this.moustache.position.y = Math.cos(Date.now() * 0.01) * distance/2 ;
+  this.moustache.rotation.z = Math.sin(Date.now() * 0.01) * Math.PI * 0.01 ;
+
+  this.mesh.rotation.y = Math.sin(Date.now() * 0.001) * Math.PI * 0.1 ; 
+
+  blinkLoop();
 
 }
 
@@ -947,41 +749,11 @@ StarsGroup.prototype.spinScale = function(){
   }
 }
 
-//ARM ANIMATION
-////////////////////
-
-Torso.prototype.wave = function(){
-
-  this.armRightGroup.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.03;
-  this.armLeftGroup.rotation.x = -Math.cos(Date.now() * 0.002) * Math.PI * 0.03;
-
-  this.armRightGroup.rotation.z = Math.sin(Date.now() * 0.002) * Math.PI * 0.02;
-  this.armLeftGroup.rotation.z = Math.cos(Date.now() * 0.002) * Math.PI * 0.032
-
-}
-
-
-//LEG ANIMATION
-////////////////////
-
-Legs.prototype.walk = function(){
-
-  this.legRightGroup.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
-  this.legLeftGroup.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.1;
-
-  this.legLowerRight.rotation.x = Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
-  this.legLowerRight.rotation.x = Math.max (0, this.legLowerRight.rotation.x); 
-
-  this.legLowerLeft.rotation.x = -Math.sin(Date.now() * 0.002) * Math.PI * 0.2;
-  this.legLowerLeft.rotation.x = Math.max (this.legLowerLeft.rotation.x, 0 ); 
-}
 
 
 function loop(){
   head.dizzy();
-
-  stars.spinScale();
-
+ // head.idle();
   render();  
   requestAnimationFrame(loop);
 }
