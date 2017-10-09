@@ -231,8 +231,15 @@ var Head = function() {
   teeth.receiveShadow = true;
   mouth.add(teeth)
 
-  this.beard.add(beardMerged, mouth); 
+  // var smileGeom = new THREE.TorusGeometry( 4, 1.5, 2, 6, -Math.PI );
+  // this.smile = new THREE.Mesh(smileGeom, blackMat);
+  // this.smile.position.set(0,2,10);
+  // this.smile.castShadow = false;
+  // this.smile.receiveShadow = true;
 
+
+  //this.beard.add(beardMerged, mouth, this.smile); 
+  this.beard.add(beardMerged, mouth); 
 
   var moustacheGeom = new THREE.BoxGeometry(14,3,3,3);
     moustacheGeom.vertices[0].y-=2;
